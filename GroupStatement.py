@@ -1,13 +1,25 @@
 import string
 
 class GroupStatement:
-    ''' A group statement is a named collectio of statements
+    ''' A group statement is a named collection of statements
     '''
 
-    def __init__(self):
+    def __init__(self, i_name = ''):
+        ''' Initialize everything that belongs to this class
+        '''
+
+        # The name in the parenthsis
+        name = i_name
+        # A quick index as a helper class.
+        # The index is organized as: "statement_name" : "statement_type"
+        # "statement_name" is the actual name of the statement
+        # "statement_type" is one of: "group", "attribute_simple", "attribute_complex", and "definition"
         index = {}
-        content = {}
-        pass
+        # The actual statements in this group statement
+        statements = {}
+        # The comments found within the lines of the group statement
+        # Each element in this list is a tuple of (lineNumber, commentString)
+        comments = []
 
     def parse(self, libFile, curLine, endLine):
         ''' I libFile is a string array of each line of the liberty file
@@ -24,12 +36,15 @@ class GroupStatement:
         while sContinueParsing:
             tCurrentLine = libFile[curLine]
             # Check if it is the end of the group statement
-            if "}" in tCurrentLine:
+            if '}' in tCurrentLine:
                 sContinueParsing = False
                 tEscapeChar = tCurrentLine.strip()
-                if tEscapeChar == "}":
+                if tEscapeChar == '}':
                     break
                 else:
-                    tCurrentLine = tCurrentLine.rstrip("}")
+                    tCurrentLine = tCurrentLine.rstrip('}')
         
             # Actual parsing starts here
+            # If it is a new group statement
+            if '{' in tCurrentLine:
+                tGroupName = tCurrentLine[:tCurrentLine.find('(')].strip()
