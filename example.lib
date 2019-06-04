@@ -48,8 +48,6 @@ library(foo) {
  * microns.                                                      */ 
 
 /* fudge = correction factor, routing, placement, etc.           */
-   fudge = 1.0;
-
 /* cap = fudge * cap per micron			                 *
  * I assume cap is in capacitance units per micron               *
  * (remember that our capacitance unit is 1.0pf)                 */
@@ -63,17 +61,9 @@ library(foo) {
  * 10k gates (I'll assume this is a core of a single TCU which   *
  * is 900u on a side)                                            */ 
 
-   length_10k = 900;
-   length_top = 2500.0;
-
 /* sqrt(5000/10000) = .71   *
  * sqrt(2000/10000) = .45   *
  *  etc                     */
-
-   length_5k  = length_10k * 0.71; 
-   length_2k  = length_10k * 0.45;
-   length_1k  = length_10k * 0.32;
-   length_500 = length_10k * 0.22;
 
 /* It turns out that the conversion program that converts *
  * .lib files into .tlf files doesn't like using a	  *
