@@ -23,9 +23,24 @@ class SimpleAttributeTestCase(unittest.TestCase):
                 sListOfStatements[tCurLine] = SimpleAttribute()
                 tCurLine = sListOfStatements[tCurLine].parse(sContent, tCurLine, sEndLine)
         
-        for i in range (sEndLine):
-            print(sListOfStatements[i].value)
-        self.assertFalse(False)
+        self.assertEqual(sListOfStatements[0].name, 'comment')
+        self.assertEqual(sListOfStatements[0].value, '" "')
+        self.assertEqual(sListOfStatements[1].name, 'date')
+        self.assertEqual(sListOfStatements[1].value, '"$Date: Jun 18"')
+        self.assertEqual(sListOfStatements[2].name, 'version')
+        self.assertEqual(sListOfStatements[2].value, '"1.0"')
+        self.assertEqual(sListOfStatements[3].name, 'value')
+        self.assertEqual(sListOfStatements[3].value, '1')
+        self.assertEqual(sListOfStatements[4].name, 'invalid_name')
+        self.assertEqual(sListOfStatements[4].value, 'invalid_value')
+        self.assertEqual(sListOfStatements[5].name, 'invalid_name')
+        self.assertEqual(sListOfStatements[5].value, 'invalid_value')
+        self.assertEqual(sListOfStatements[6].name, 'invalid_name')
+        self.assertEqual(sListOfStatements[6].value, 'invalid_value')
+        self.assertEqual(sListOfStatements[7].name, 'invalid_name')
+        self.assertEqual(sListOfStatements[7].value, 'invalid_value')
+        self.assertEqual(sListOfStatements[8].name, 'index')
+        self.assertEqual(sListOfStatements[8].value, '5')
 
 if __name__ == "__main__":
     unittest.main()
