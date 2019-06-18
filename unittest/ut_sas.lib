@@ -1,0 +1,9 @@
+comment : " ";
+date : "$Date: Jun 18";
+version : "1.0";
+value : 1;
+index_1 ("0, 0.1, 0.2, 0.4")
+group (null) {
+    nothing : nothing
+}
+index : 5;

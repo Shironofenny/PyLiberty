@@ -1,6 +1,6 @@
 import string
 
-class GroupStatement:
+class GroupStatement(Statement):
     ''' A group statement is a named collection of statements
     '''
 
@@ -9,14 +9,14 @@ class GroupStatement:
         '''
 
         # The name in the parenthsis
-        name = i_name
+        Statement.__init__(self, i_name)
         # A quick index as a helper class.
         # The index is organized as: "statement_name" : "statement_type"
         # "statement_name" is the actual name of the statement
         # "statement_type" is one of: "group", "attribute_simple", "attribute_complex", and "definition"
-        index = {}
+        self.index = {}
         # The actual statements in this group statement
-        statements = {}
+        self.content = []
         # The comments found within the lines of the group statement
         # Each element in this list is a tuple of (lineNumber, commentString)
         comments = []
