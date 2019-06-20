@@ -3,6 +3,27 @@ from SimpleAttribute import SimpleAttribute
 from ComplexAttribute import ComplexAttribute
 from GroupStatement import GroupStatement
 
+# Read Liberty file
+# I: fileObject, the object to the file for parsing
+# O: content, a string of the entire file
+def readLibertyFile(fileObject):
+    rString = fileObject.read()
+    if rString[-1] != '\n':
+        rString = rString + '\n'
+    return rString
+
+#
+def moveToNextStatement(libFile, curChar, endChar, curLine):
+    while curChar < endChar:
+        if not libFile[curChar].isspace():
+            break
+        else:
+            if libFile[curChar] == '\n':
+                curLine = curLine + 1
+            curChar = curChar + 1
+    return curChar, curLine
+    
+
 # Find the matched bracket
 # I: parseString, the string where the bracket is to be found
 #    the first character in the string must be the source parameter

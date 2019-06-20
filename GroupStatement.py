@@ -1,4 +1,4 @@
-import string
+from Statement import Statement
 
 class GroupStatement(Statement):
     ''' A group statement is a named collection of statements
