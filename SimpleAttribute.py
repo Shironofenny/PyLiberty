@@ -1,6 +1,7 @@
 from Statement import Statement
 
 class SimpleAttribute(Statement):
+
     def __init__(self, i_name = ''):
         ''' Initialize everything that belongs to this class
         '''
@@ -20,6 +21,10 @@ class SimpleAttribute(Statement):
         if curLine >= endLine:
             print("[ERROR]: Starting beyond the end of the file. Something must has gone wrong!")
             return endLine
+        
+        # Simple attributes occupies only one line
+        self.startingLine = curLine
+        self.endingLine = curLine
         
         tString = libFile[curLine]
         tOffsetColon = tString.find(':')

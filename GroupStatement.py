@@ -31,7 +31,8 @@ class GroupStatement(Statement):
         if curLine >= endLine:
             print("[ERROR]: Starting beyond the end of the file. Something must has gone wrong!")
             return endLine
-
+        
+        self.lineStart = curLine
         sContinueParsing = True
         while sContinueParsing:
             tCurrentLine = libFile[curLine]

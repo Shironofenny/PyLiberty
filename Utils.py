@@ -1,3 +1,8 @@
+from Statement import Statement
+from SimpleAttribute import SimpleAttribute
+from ComplexAttribute import ComplexAttribute
+from GroupStatement import GroupStatement
+
 # Find the matched bracket
 # I: parseString, the string where the bracket is to be found
 #    the first character in the string must be the source parameter
@@ -23,3 +28,26 @@ def findMatchedBracket(parseString, source = '{', target = '}'):
             stackDepth = stackDepth + 1
         curIndex = curIndex + 1
     return None
+
+# Classify
+# I: parseString, The string that needs to be classified into one of the statements
+# O: Statement instance, an instance of the statement class that matches the pattern of
+#    the parseString
+def classify(parseString):
+    # Keyword finder:
+    indexSemicolon = parseString.find(';')
+    if indexSemicolon == -1:
+        # A group statement or a false one
+        indexLeftBracket = parseString.find('{')
+        if indexLeftBracket == -1:
+            return Statement()
+        else:
+            return GroupStatement()
+    
+    # If there is a colon, that is a simple attribute
+    indexColon = parseString.find(':')
+    if indexColon != -1:
+        return SimpleAttribute()
+    indexDefine = parseString.find('define')
+    indexLeftParenthsis = parseString.find('(')
+    return Statement()

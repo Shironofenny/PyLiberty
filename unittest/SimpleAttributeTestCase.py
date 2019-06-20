@@ -22,6 +22,11 @@ class SimpleAttributeTestCase(unittest.TestCase):
             while(tCurLine < sEndLine):
                 sListOfStatements[tCurLine] = SimpleAttribute()
                 tCurLine = sListOfStatements[tCurLine].parse(sContent, tCurLine, sEndLine)
+
+        sSortedListOfStatements = sListOfStatements.copy()
+        sSortedListOfStatements.sort()
+
+        self.assertEqual(sSortedListOfStatements, sListOfStatements)
         
         self.assertEqual(sListOfStatements[0].name, 'comment')
         self.assertEqual(sListOfStatements[0].value, '" "')
