@@ -31,6 +31,7 @@ class Comment(Statement):
             self.value = 'invalid_value'
             return endChar, -1
         
+        self.startingPoint = curChar
         self.name = 'comment'
         indexCommentEnd = tString.find('*/')
         self.value = tString[:indexCommentEnd + 2]

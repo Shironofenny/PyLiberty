@@ -21,18 +21,18 @@ class GroupStatement(Statement):
         # Each element in this list is a tuple of (lineNumber, commentString)
         comments = []
 
-    def parse(self, libFile, curLine, endLine):
+    def parse(self, libFile, curChar, endChar, curLine, verbose = False):
         ''' I libFile is a string array of each line of the liberty file
             I curLine is the current line for parsing this group statement
             I endLine is the end of the line, just for safety reason
             R nextLine is the next line that the potential parent parser should start to work on
         '''
         # Sanity check
-        if curLine >= endLine:
+        if curChar >= endChar:
             print("[ERROR]: Starting beyond the end of the file. Something must has gone wrong!")
-            return endLine
+            return endChar, -1
         
-        self.lineStart = curLine
+        self.startingPoint = curChar
         sContinueParsing = True
         while sContinueParsing:
             tCurrentLine = libFile[curLine]
