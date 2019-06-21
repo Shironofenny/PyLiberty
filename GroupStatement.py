@@ -1,4 +1,5 @@
 from Statement import Statement
+import Utils
 
 class GroupStatement(Statement):
     ''' A group statement is a named collection of statements
@@ -17,9 +18,6 @@ class GroupStatement(Statement):
         self.index = {}
         # The actual statements in this group statement
         self.content = []
-        # The comments found within the lines of the group statement
-        # Each element in this list is a tuple of (lineNumber, commentString)
-        comments = []
 
     def parse(self, libFile, curChar, endChar, curLine, verbose = False):
         ''' I libFile is a string array of each line of the liberty file
@@ -33,18 +31,33 @@ class GroupStatement(Statement):
             return endChar, -1
         
         self.startingPoint = curChar
-        sContinueParsing = True
-        while sContinueParsing:
-            tCurrentLine = libFile[curLine]
-            # Check if it is the end of the group statement
-            if '}' in tCurrentLine:
-                sContinueParsing = False
-                tEscapeChar = tCurrentLine.strip()
-                if tEscapeChar == '}':
-                    break
-                else:
-                    tCurrentLine = tCurrentLine.rstrip('}')
         
+        # The current part of the information should be the starting point of a group statement
+        # Put a redundant check to be safe
+        tString = libFile[curChar:]
+        indexFirstLeftBracket = tString.find('{')
+        indexFirstSemicolon = tString.find(';')
+        if indexFirstLeftBracket < indexFirstLeftBracket or indexFirstLeftBracket == -1 or indexFirstSemicolon == -1:
+            if verbose:
+                print("[ERROR]: Not a valid group statement on line " + str(curLine + 1) + ".")
+            return endChar, -1
+        
+        sGroupStatementHeader = tString[:indexFirstLeftBracket]
+        indexLeftParenthesis = sGroupStatementHeader.find('(')
+        indexRightParenthesis = sGroupStatementHeader.find(')')
+        self.name = sGroupStatementHeader[:indexLeftParenthesis].strip()
+        self.value = sGroupStatementHeader[indexLeftParenthesis + 1 : indexRightParenthesis].strip()
+        curChar = curChar + indexRightParenthesis + 1
+        curChar, curLine = Utils.moveToNextStatement(libFile, curChar, endChar, curLine)
+
+        # Parsing everything within this group statement
+        sStatementCounter = 0
+        while True:
+            tString = libFile[curChar:]
+            # Check if it is the end of the group statement
+            if tCurrentLine[0] == '}':
+                break
+
             # Actual parsing starts here
             # If it is a new group statement
             if '{' in tCurrentLine:
