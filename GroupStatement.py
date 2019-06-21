@@ -47,7 +47,7 @@ class GroupStatement(Statement):
         indexRightParenthesis = sGroupStatementHeader.find(')')
         self.name = sGroupStatementHeader[:indexLeftParenthesis].strip()
         self.value = sGroupStatementHeader[indexLeftParenthesis + 1 : indexRightParenthesis].strip()
-        curChar = curChar + indexRightParenthesis + 1
+        curChar = curChar + indexFirstLeftBracket + 1
         curChar, curLine = Utils.moveToNextStatement(libFile, curChar, endChar, curLine)
 
         # Parsing everything within this group statement
@@ -55,10 +55,15 @@ class GroupStatement(Statement):
         while True:
             tString = libFile[curChar:]
             # Check if it is the end of the group statement
-            if tCurrentLine[0] == '}':
+            if tString[0] == '}':
+                curChar = curChar + 1
                 break
 
             # Actual parsing starts here
-            # If it is a new group statement
-            if '{' in tCurrentLine:
-                tGroupName = tCurrentLine[:tCurrentLine.find('(')].strip()
+            # All leading white spaces should have been removed before the classification started
+            tStatement = Utils.classify(tString)
+            curChar, curLine = tStatement.parse(libFile, curChar, endChar, curLine)
+            self.content.append(tStatement)
+            curChar, curLine = Utils.moveToNextStatement(libFile, curChar, endChar, curLine)
+
+        return curChar, curLine

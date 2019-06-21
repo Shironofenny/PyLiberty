@@ -9,13 +9,13 @@ library (CM018DDLS) {
     operating_conditions (PVT_TT25C) {
         process : 1;
         temperature : 25;
-        voltage : 1.8
+        voltage : 1.8;
     }
     lu_table_template (delay_7x7) {
         variable_1 : input_net_transition;
         variable_2 : total_output_net_capacitance;
-        index_1 ("0, 0.01, 0.04, 0.12, 0.3, 0.6, 1")
-        index_2 ("1e-05, 10, 40, 120, 300, 600, 1000")
+        index_1 ("0, 0.01, 0.04, 0.12, 0.3, 0.6, 1");
+        index_2 ("1e-05, 10, 40, 120, 300, 600, 1000");
     }
     cell (NAND) {
         area : 15;

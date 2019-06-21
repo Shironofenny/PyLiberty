@@ -86,7 +86,19 @@ def classify(parseString):
         return SimpleAttribute()
     
     # Check if it is a definition statement
-    # TODO: not yet done
     indexDefine = parseString.find('define')
+    indexInclude = parseString.find('include_file')
     indexLeftParenthsis = parseString.find('(')
+    if indexDefine < indexSemicolon and indexDefine != -1 and indexSemicolon != -1:
+        # TODO Should be define statement
+        return Statement()
+
+    if indexInclude < indexSemicolon and indexInclude != -1 and indexSemicolon != -1:
+        # TODO Should be include statement
+        return Statement()
+    
+    if indexLeftParenthsis < indexSemicolon and indexLeftParenthsis != -1 and indexSemicolon != -1:
+        return ComplexAttribute()
+
+    # If nothing matches, I don't know
     return Statement()
