@@ -1,0 +1,6 @@
+comment : " "; /* In fact a simple attribute */
+line (1, 2, 6, 8); /* An example from reference manual */
+points ("1", "2", "6", "8", "10", "16"); 
+index_1 ("0, 1, 5, 10, 100");
+index_2 ("0, 1, 5, 10, 100", "0, 0.5, 2.5, 5, 50");
+index_3 ("0, 1, 5, 10, 100", "0, 0.5, 2.5, 5, 50", "0, 2, 10, 20, 200");

@@ -1,4 +1,5 @@
 from Statement import Statement
+from Comment import Comment
 from SimpleAttribute import SimpleAttribute
 from ComplexAttribute import ComplexAttribute
 from GroupStatement import GroupStatement
@@ -12,8 +13,17 @@ def readLibertyFile(fileObject):
         rString = rString + '\n'
     return rString
 
-#
 def moveToNextStatement(libFile, curChar, endChar, curLine):
+    ''' Move to next statement
+    I:  libFile, the liberty file in string
+    I:  curChar, the index of the currently processed character
+    I:  endChar, the end index of this entire liberty file
+    I:  curLine, the line number where the current character is in
+    O:  curChar, curLine
+        After moving to the next statement, returned curChar is the
+        character index of that in the liberty file, returned curLine
+        is which line this character is at 
+    '''
     while curChar < endChar:
         if not libFile[curChar].isspace():
             break
@@ -23,16 +33,17 @@ def moveToNextStatement(libFile, curChar, endChar, curLine):
             curChar = curChar + 1
     return curChar, curLine
     
-
-# Find the matched bracket
-# I: parseString, the string where the bracket is to be found
-#    the first character in the string must be the source parameter
-# I: source, the source bracket that need to be matched
-# I: target, the target bracket
-# O: offsetVal, the amount of offset in this string where the matched
-#    bracket is found. When it is a None, meaning no such matched
-#    bracket is in the string
 def findMatchedBracket(parseString, source = '{', target = '}'):
+    '''
+    Find the matched bracket
+    I:  parseString, the string where the bracket is to be found
+        the first character in the string must be the source parameter
+    I:  source, the source bracket that need to be matched
+    I:  target, the target bracket
+    O:  offsetVal, the amount of offset in this string where the matched
+        bracket is found. When it is a None, meaning no such matched
+        bracket is in the string
+    '''
     assert parseString[0] == source
     assert len(source) == 1
     assert len(target) == 1
@@ -50,25 +61,32 @@ def findMatchedBracket(parseString, source = '{', target = '}'):
         curIndex = curIndex + 1
     return None
 
-# Classify
-# I: parseString, The string that needs to be classified into one of the statements
-# O: Statement instance, an instance of the statement class that matches the pattern of
-#    the parseString
 def classify(parseString):
-    # Keyword finder:
+    '''
+    Classify
+    I:  parseString, The string that needs to be classified into one of the statements
+    O:  Statement instance, an instance of the statement class that matches the pattern of
+        the parseString
+    '''
+    # Check if it is a comment
+    indexCommentStart = parseString.find('/*')
+    if indexCommentStart == 0:
+        return Comment()
+
+    # Check if it is a group statement, as group statements always have a '{' before ';'
     indexSemicolon = parseString.find(';')
-    if indexSemicolon == -1:
+    indexLeftBracket = parseString.find('{')
+    if indexLeftBracket < indexSemicolon and indexSemicolon != -1 and indexLeftBracket != -1:
         # A group statement or a false one
-        indexLeftBracket = parseString.find('{')
-        if indexLeftBracket == -1:
-            return Statement()
-        else:
-            return GroupStatement()
+        return GroupStatement()
     
     # If there is a colon, that is a simple attribute
     indexColon = parseString.find(':')
-    if indexColon != -1:
+    if indexColon != -1 and indexColon < indexSemicolon:
         return SimpleAttribute()
+    
+    # Check if it is a definition statement
+    # TODO: not yet done
     indexDefine = parseString.find('define')
     indexLeftParenthsis = parseString.find('(')
     return Statement()
