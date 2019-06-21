@@ -5,34 +5,37 @@ import sys
 # Import the base class for testing
 sys.path.append(os.getcwd())
 sys.path.append(os.path.dirname(os.getcwd()))
-from ComplexAttribute import ComplexAttribute
+from Comment import Comment
 
 import Utils
 
-class ComplexAttributeTestCase(unittest.TestCase):
+class CommentTestCase(unittest.TestCase):
     def setUp(self):
         pass
     
-    def test_ca_parsing(self):
-        sFilename = "ut_cas.lib"
+    def test_comment_parsing(self):
+        sFilename = "ut_comment.lib"
         if os.path.isdir('unittest'):
             sFilename = "unittest/" + sFilename
         with open(sFilename, 'r') as tLibFile:
             sContent = Utils.readLibertyFile(tLibFile)
             sEndChar = len(sContent)
-            sListOfStatements = [None] * 6
+            sListOfStatements = [None] * 3
             tCurLine = 0
             tCurChar = 0
+            tCurChar, tCurLine = Utils.moveToNextStatement(sContent, tCurChar, sEndChar, tCurLine)
+            i = 0
             while(tCurChar < sEndChar):
-                sListOfStatements[tCurLine] = ComplexAttribute()
-                tCurChar, tCurLine = sListOfStatements[tCurLine].parse(sContent, tCurChar, sEndChar, tCurLine)
+                sListOfStatements[i] = Comment()
+                tCurChar, tCurLine = sListOfStatements[i].parse(sContent, tCurChar, sEndChar, tCurLine)
                 tCurChar, tCurLine = Utils.moveToNextStatement(sContent, tCurChar, sEndChar, tCurLine)
+                i = i+1
 
         sSortedListOfStatements = sListOfStatements.copy()
         sSortedListOfStatements.sort()
 
         self.assertEqual(sSortedListOfStatements, sListOfStatements)
-        for i in range(6):
+        for i in range(3):
             print(sListOfStatements[i].name)
             print(sListOfStatements[i].value)
             print(sListOfStatements[i].comment)
