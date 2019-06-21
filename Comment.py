@@ -15,30 +15,26 @@ class Comment(Statement):
         # This class is supposed to be a semi-abstract class
         return 'Comments of ' + str(self.endingLine - self.startingLine) + ' lines long.'
     
-    def parse(self, libFile, curLine, endLine, verbose = False):
+    def parse(self, libFile, curChar, endChar, curLine, verbose = False):
         
         # Sanity check
-        if curLine >= endLine:
+        if curChar >= endChar:
             print("[ERROR]: Starting beyond the end of the file. Something must has gone wrong!")
-            return endLine
+            return endChar, -1
 
-        tString = libFile[curLine]
+        tString = libFile[curChar:]
         indexCommentStart = tString.find('/*')
-        if indexCommentStart == -1:
+        if indexCommentStart != 0:
             if verbose:
                 print("[ERROR]: Not a valid comment on line " + str(curLine + 1) + ".")
             self.name = 'invalid_name'
             self.value = 'invalid_value'
-            return curLine + 1
+            return endChar, -1
         
         self.name = 'comment'
-        self.value = []
-
-        self.value.append(tString)
         indexCommentEnd = tString.find('*/')
-        while indexCommentEnd == -1:
-            curLine = curLine + 1
-            tString = libFile[curLine]
-            indexCommentEnd = tString.find('*/')
-            self.value.append(tString)
-        return curLine + 1
+        self.value = tString[:indexCommentEnd + 2]
+        tNrNewLines = self.value.count('\n')
+        curLine = curLine + tNrNewLines
+        curChar = curChar + indexCommentEnd + 2
+        return curChar, curLine
