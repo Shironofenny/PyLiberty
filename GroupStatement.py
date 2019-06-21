@@ -62,7 +62,7 @@ class GroupStatement(Statement):
             # Actual parsing starts here
             # All leading white spaces should have been removed before the classification started
             tStatement = Utils.classify(tString)
-            curChar, curLine = tStatement.parse(libFile, curChar, endChar, curLine)
+            curChar, curLine = tStatement.parse(libFile, curChar, endChar, curLine, verbose)
             self.content.append(tStatement)
             curChar, curLine = Utils.moveToNextStatement(libFile, curChar, endChar, curLine)
 
