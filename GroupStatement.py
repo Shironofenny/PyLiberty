@@ -12,9 +12,10 @@ class GroupStatement(Statement):
         # The name in the parenthsis
         Statement.__init__(self, i_name)
         # A quick index as a helper class.
-        # The index is organized as: "statement_name" : "statement_type"
+        # The index is organized as: "statement_name" : List(locations in content array)
         # "statement_name" is the actual name of the statement
-        # "statement_type" is one of: "group", "attribute_simple", "attribute_complex", and "definition"
+        # List(location in content array) is a list that points you to where the statements with the
+        # corresponding name can be found
         self.index = {}
         # The actual statements in this group statement
         self.content = []
@@ -64,6 +65,12 @@ class GroupStatement(Statement):
             tStatement = Utils.classify(tString)
             curChar, curLine = tStatement.parse(libFile, curChar, endChar, curLine, verbose)
             self.content.append(tStatement)
+            tName = tStatement.name
+            tLocation = len(self.content)-1
+            if tName in self.index:
+                self.index[tName].append(tLocation)
+            else:
+                self.index[tName] = [tLocation]
             curChar, curLine = Utils.moveToNextStatement(libFile, curChar, endChar, curLine)
 
         return curChar, curLine

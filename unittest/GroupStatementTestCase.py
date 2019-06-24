@@ -35,10 +35,9 @@ class GroupStatementTestCase(unittest.TestCase):
         sSortedListOfStatements.sort()
 
         self.assertEqual(sSortedListOfStatements, sListOfStatements)
-        for i in range(2):
-            print(sListOfStatements[i].name)
-            print(sListOfStatements[i].value)
-            print(sListOfStatements[i].comment)
+        print(sListOfStatements[0].value)
+        print(sListOfStatements[1].index)
+        print(sListOfStatements[1].content)
         
 if __name__ == "__main__":
     unittest.main()

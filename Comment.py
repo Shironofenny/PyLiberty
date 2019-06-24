@@ -32,7 +32,8 @@ class Comment(Statement):
             return endChar, -1
         
         self.startingPoint = curChar
-        self.name = 'comment'
+        # "static_comment_string" is used as "comment" sometimes is a valid simple attribute for certain cases
+        self.name = 'static_comment_string'
         indexCommentEnd = tString.find('*/')
         self.value = tString[:indexCommentEnd + 2]
         tNrNewLines = self.value.count('\n')
