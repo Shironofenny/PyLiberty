@@ -1,8 +1,8 @@
-from Statement import Statement
-from Comment import Comment
-from SimpleAttribute import SimpleAttribute
-from ComplexAttribute import ComplexAttribute
-from GroupStatement import GroupStatement
+from .Statement import Statement
+from .Comment import Comment
+from .SimpleAttribute import SimpleAttribute
+from .ComplexAttribute import ComplexAttribute
+from .GroupStatement import GroupStatement
 
 # Read Liberty file
 # I: fileObject, the object to the file for parsing

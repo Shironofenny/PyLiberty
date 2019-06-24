@@ -1,5 +1,5 @@
-from Statement import Statement
-import Utils
+from .Statement import Statement
+from . import Utils
 
 class GroupStatement(Statement):
     ''' A group statement is a named collection of statements

@@ -1,6 +1,6 @@
 import shlex
 
-from Statement import Statement
+from .Statement import Statement
 
 class ComplexAttribute(Statement):
 
