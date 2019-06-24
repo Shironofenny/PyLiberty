@@ -20,6 +20,9 @@ class GroupStatement(Statement):
         # The actual statements in this group statement
         self.content = []
 
+    def __str__(self):
+        return "Group Statement: " + self.name + "(" + self.value + "), containing " + str(len(self.content)) + " statements."
+
     def parse(self, libFile, curChar, endChar, curLine, verbose = False):
         ''' I libFile is a string array of each line of the liberty file
             I curLine is the current line for parsing this group statement

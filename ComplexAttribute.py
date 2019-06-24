@@ -28,6 +28,17 @@ class ComplexAttribute(Statement):
         indexParenthesisRight = tString.find(')')
         indexFirstSemicolon = tString.find(';')
         indexFirstNewLine = tString.find('\n')
+        
+        # Check if it is a multi-line statement
+        while True:
+            indexPrevFirstNewLine = indexFirstNewLine - 1
+            while tString[indexPrevFirstNewLine] == ' ' or tString[indexPrevFirstNewLine] == '\t':
+                indexPrevFirstNewLine = indexPrevFirstNewLine - 1
+            if tString[indexPrevFirstNewLine] == '\\':
+                indexFirstNewLine = tString[indexFirstNewLine+1:].find('\n') + indexFirstNewLine + 1
+                curLine = curLine + 1
+            else:
+                break
 
         if indexParenthesisLeft == -1 or indexParenthesisRight == -1 or indexFirstSemicolon == -1 or indexParenthesisLeft > indexFirstNewLine or indexParenthesisRight > indexFirstNewLine:
             if verbose:
@@ -35,9 +46,11 @@ class ComplexAttribute(Statement):
             self.name = 'invalid_name'
             self.value = 'invalid_value'
         else:
-            self.name = tString[:indexParenthesisLeft].strip(' ')
+            self.name = tString[:indexParenthesisLeft].strip()
             tShlexObject = shlex.shlex(tString[indexParenthesisLeft + 1:indexParenthesisRight])
             tShlexObject.whitespace += ','
+            tShlexObject.wordchars += '.'
+            tShlexObject.commenters += '\\'
             self.value = list(tShlexObject)
             tResidualString = tString[indexFirstSemicolon + 1 : indexFirstNewLine]
             if tResidualString.strip() != '':
