@@ -5,9 +5,9 @@ import sys
 # Import the base class for testing
 sys.path.append(os.getcwd())
 sys.path.append(os.path.dirname(os.getcwd()))
-from Comment import Comment
 
-import Utils
+from src import Comment
+from src import InternalHelperUtilities as Utils
 
 class CommentTestCase(unittest.TestCase):
     def setUp(self):

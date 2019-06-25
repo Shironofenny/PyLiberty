@@ -23,6 +23,31 @@ class GroupStatement(Statement):
     def __str__(self):
         return "Group Statement: " + self.name + "(" + self.value + "), containing " + str(len(self.content)) + " statements."
 
+    def __getitem__(self, key):
+        if isinstance(key, slice):
+            raise TypeError("Group statement doesn't take slices as keys.")
+        elif isinstance(key, str):
+            if key in self.index:
+                if len(self.index[key]) == 1:
+                    return self.content[self.index[key][0]]
+                else:
+                    return [self.content[i] for i in self.index[key]]
+            else:
+                raise IndexError("Cannot find entry " + str(key) + ".")
+        elif isinstance(key, tuple):
+            if len(key) != 2:
+                raise IndexError("Group statements only accept (name, value) as a tuple for group statement indexing")
+            name, value = key
+            if name in self.index:
+                for iEntry in self.index[name]:
+                    if self.content[iEntry].value == value:
+                        return self.content[iEntry]
+                raise IndexError("Group statement " + name + " with value " + value + " not found!")
+            else:
+                raise IndexError("Group statement " + name + " not found!")
+        else:
+            raise TypeError("Invalid argument Type!")
+
     def parse(self, libFile, curChar, endChar, curLine, verbose = False):
         ''' I libFile is a string array of each line of the liberty file
             I curLine is the current line for parsing this group statement

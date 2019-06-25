@@ -4,6 +4,7 @@ class Statement(object):
         self.name = i_name
         self.startingPoint = 0
         self.comment = None
+        self.value = None
 
     def __lt__(self, other):
         return self.startingPoint < other.startingPoint
