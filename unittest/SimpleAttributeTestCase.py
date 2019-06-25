@@ -4,8 +4,8 @@ import sys
 
 sys.path.append(os.getcwd())
 sys.path.append(os.path.dirname(os.getcwd()))
-from SimpleAttribute import SimpleAttribute
-import Utils
+from src import SimpleAttribute
+from src import InternalHelperUtilities as Utils
 
 class SimpleAttributeTestCase(unittest.TestCase):
     def setUp(self):

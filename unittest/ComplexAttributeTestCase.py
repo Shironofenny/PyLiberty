@@ -5,9 +5,8 @@ import sys
 # Import the base class for testing
 sys.path.append(os.getcwd())
 sys.path.append(os.path.dirname(os.getcwd()))
-from ComplexAttribute import ComplexAttribute
-
-import Utils
+from src import ComplexAttribute
+from src import InternalHelperUtilities as Utils
 
 class ComplexAttributeTestCase(unittest.TestCase):
     def setUp(self):
