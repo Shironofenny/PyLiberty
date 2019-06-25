@@ -19,16 +19,17 @@ class CommentTestCase(unittest.TestCase):
             sFilename = "unittest/" + sFilename
         with open(sFilename, 'r') as tLibFile:
             sContent = Utils.readLibertyFile(tLibFile)
-            sEndChar = len(sContent)
+            sEndOfFile = len(sContent)
             sListOfStatements = [None] * 3
             tCurLine = 0
             tCurChar = 0
-            tCurChar, tCurLine = Utils.moveToNextStatement(sContent, tCurChar, sEndChar, tCurLine)
+            tCurChar, tCurLine = Utils.moveToNextStatement(sContent, tCurChar, sEndOfFile, tCurLine)
             i = 0
-            while(tCurChar < sEndChar):
-                sListOfStatements[i] = Comment()
-                tCurChar, tCurLine = sListOfStatements[i].parse(sContent, tCurChar, sEndChar, tCurLine)
-                tCurChar, tCurLine = Utils.moveToNextStatement(sContent, tCurChar, sEndChar, tCurLine)
+            tEndChar = sEndOfFile
+            while(tCurChar < sEndOfFile):
+                sListOfStatements[i], tEndChar = Utils.classify(sContent, tCurChar)
+                tCurChar, tCurLine = sListOfStatements[i].parse(sContent, tCurChar, tEndChar, tCurLine, verbose=True)
+                tCurChar, tCurLine = Utils.moveToNextStatement(sContent, tCurChar, sEndOfFile, tCurLine)
                 i = i+1
 
         sSortedListOfStatements = sListOfStatements.copy()

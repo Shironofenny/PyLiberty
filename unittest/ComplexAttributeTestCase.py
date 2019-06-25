@@ -18,20 +18,22 @@ class ComplexAttributeTestCase(unittest.TestCase):
             sFilename = "unittest/" + sFilename
         with open(sFilename, 'r') as tLibFile:
             sContent = Utils.readLibertyFile(tLibFile)
-            sEndChar = len(sContent)
-            sListOfStatements = [None] * 6
+            sEndOfFile = len(sContent)
+            sListOfStatements = []
             tCurLine = 0
             tCurChar = 0
-            while(tCurChar < sEndChar):
-                sListOfStatements[tCurLine] = ComplexAttribute()
-                tCurChar, tCurLine = sListOfStatements[tCurLine].parse(sContent, tCurChar, sEndChar, tCurLine)
-                tCurChar, tCurLine = Utils.moveToNextStatement(sContent, tCurChar, sEndChar, tCurLine)
+            tEndChar = 0
+            while(tCurChar < sEndOfFile):
+                tNextStatement, tEndChar = Utils.classify(sContent, tCurChar)
+                sListOfStatements.append(tNextStatement)
+                tCurChar, tCurLine = sListOfStatements[-1].parse(sContent, tCurChar, tEndChar, tCurLine, verbose=True)
+                tCurChar, tCurLine = Utils.moveToNextStatement(sContent, tCurChar, sEndOfFile, tCurLine)
 
         sSortedListOfStatements = sListOfStatements.copy()
         sSortedListOfStatements.sort()
 
         self.assertEqual(sSortedListOfStatements, sListOfStatements)
-        for i in range(6):
+        for i in range(7):
             print(sListOfStatements[i].name)
             print(sListOfStatements[i].value)
             print(sListOfStatements[i].comment)

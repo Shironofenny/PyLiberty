@@ -90,7 +90,7 @@ class GroupStatement(Statement):
 
             # Actual parsing starts here
             # All leading white spaces should have been removed before the classification started
-            tStatement = Utils.classify(tString)
+            tStatement, _ = Utils.classify(libFile, curChar)
             curChar, curLine = tStatement.parse(libFile, curChar, endChar, curLine, verbose)
             self.content.append(tStatement)
             tName = tStatement.name

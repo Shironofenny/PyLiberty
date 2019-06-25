@@ -4,27 +4,28 @@ from .SimpleAttribute import SimpleAttribute
 from .ComplexAttribute import ComplexAttribute
 from .GroupStatement import GroupStatement
 
-# Read Liberty file
-# I: fileObject, the object to the file for parsing
-# O: content, a string of the entire file
 def readLibertyFile(fileObject):
+    ''' Read Liberty File
+    I:  fileObject, the object to the file for parsing
+    O:  content, a string of the entire file
+    '''
     rString = fileObject.read()
     if rString[-1] != '\n':
         rString = rString + '\n'
     return rString
 
-def moveToNextStatement(libFile, curChar, endChar, curLine):
+def moveToNextStatement(libFile, curChar, endOfFile, curLine):
     ''' Move to next statement
     I:  libFile, the liberty file in string
     I:  curChar, the index of the currently processed character
-    I:  endChar, the end index of this entire liberty file
+    I:  endOfFile, the end index of this entire liberty file
     I:  curLine, the line number where the current character is in
     O:  curChar, curLine
         After moving to the next statement, returned curChar is the
         character index of that in the liberty file, returned curLine
         is which line this character is at 
     '''
-    while curChar < endChar:
+    while curChar < endOfFile:
         if not libFile[curChar].isspace():
             break
         else:
@@ -61,29 +62,40 @@ def findMatchedBracket(parseString, source = '{', target = '}'):
         curIndex = curIndex + 1
     return None
 
-def classify(parseString):
+def classify(libFile, curChar):
     '''
     Classify
-    I:  parseString, The string that needs to be classified into one of the statements
-    O:  Statement instance, an instance of the statement class that matches the pattern of
-        the parseString
+    I:  libFile, The string that contains the whole liberty file
+    I:  curChar, the current character being process, in this case, the statement classi-
+        fication starts from this character
+    O:  Statement instance, endChar: 
+        Statement instance, an instance of the statement class that matches the pattern
+        of the parseString; 
+        endChar, the offset + 1 at the end of this statement. The extra 1 offset is added
+        so that libFile[curChar, endChar] is the very statement for processing
     '''
+    # Find the starting point of the parsing process
+    parseString = libFile[curChar:]
+
     # Check if it is a comment
     indexCommentStart = parseString.find('/*')
     if indexCommentStart == 0:
-        return Comment()
+        indexCommentEnd = parseString.find('*/')
+        return Comment(), curChar + indexCommentEnd + 2
 
     # Check if it is a group statement, as group statements always have a '{' before ';'
     indexSemicolon = parseString.find(';')
     indexLeftBracket = parseString.find('{')
     if indexLeftBracket < indexSemicolon and indexSemicolon != -1 and indexLeftBracket != -1:
         # A group statement or a false one
-        return GroupStatement()
+        # endChar is 0 as anything can happen in a group statement, and simple, reliable detection doesn't exist
+        # For instance, an earlier '}' may show up in a comment before the actual termination
+        return GroupStatement(), 0
     
     # If there is a colon, that is a simple attribute
     indexColon = parseString.find(':')
-    if indexColon != -1 and indexColon < indexSemicolon:
-        return SimpleAttribute()
+    if indexColon != -1 and indexColon < indexSemicolon and indexSemicolon != -1:
+        return SimpleAttribute(), indexSemicolon + 1
     
     # Check if it is a definition statement
     indexDefine = parseString.find('define')
@@ -91,14 +103,14 @@ def classify(parseString):
     indexLeftParenthsis = parseString.find('(')
     if indexDefine < indexSemicolon and indexDefine != -1 and indexSemicolon != -1:
         # TODO Should be define statement
-        return Statement()
+        return Statement(), 0
 
     if indexInclude < indexSemicolon and indexInclude != -1 and indexSemicolon != -1:
         # TODO Should be include statement
-        return Statement()
+        return Statement(), 0
     
     if indexLeftParenthsis < indexSemicolon and indexLeftParenthsis != -1 and indexSemicolon != -1:
-        return ComplexAttribute()
+        return ComplexAttribute(), indexSemicolon + 1
 
     # If nothing matches, I don't know
     return Statement()

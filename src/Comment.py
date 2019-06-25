@@ -19,7 +19,7 @@ class Comment(Statement):
         
         # Sanity check
         if curChar >= endChar:
-            print("[ERROR]: Starting beyond the end of the file. Something must has gone wrong!")
+            print("[ERROR]: Starting beyond the end of the statement. Something must has gone wrong!")
             return endChar, -1
 
         tString = libFile[curChar:]
@@ -35,6 +35,9 @@ class Comment(Statement):
         # "static_comment_string" is used as "comment" sometimes is a valid simple attribute for certain cases
         self.name = 'static_comment_string'
         indexCommentEnd = tString.find('*/')
+        if indexCommentEnd != endChar - curChar - 2:
+            if verbose:
+                print("[WARNING]: Comment line extends beyond the end of the statement")
         self.value = tString[:indexCommentEnd + 2]
         tNrNewLines = self.value.count('\n')
         curLine = curLine + tNrNewLines

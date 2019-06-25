@@ -35,7 +35,7 @@ class Liberty(GroupStatement):
             curChar, curLine = Utils.moveToNextStatement(sLibertyString, curChar, endChar, curLine)
             sIsPostLibrary = False
             while curChar < endChar:
-                tNextStatement = Utils.classify(sLibertyString[curChar:])
+                tNextStatement, _ = Utils.classify(sLibertyString, curChar)
                 if isinstance(tNextStatement, Comment) and not sIsPostLibrary:
                     self.headComment.append(tNextStatement)
                     curChar, curLine = tNextStatement.parse(sLibertyString, curChar, endChar, curLine, verbose)

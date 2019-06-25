@@ -23,7 +23,7 @@ class ComplexAttribute(Statement):
         # Complex attribute only occupies one line
         self.startingPoint = curChar
 
-        tString = libFile[curChar:]
+        tString = libFile[curChar:endChar]
         indexParenthesisLeft = tString.find('(')
         indexParenthesisRight = tString.find(')')
         indexFirstSemicolon = tString.find(';')
@@ -35,7 +35,8 @@ class ComplexAttribute(Statement):
             while tString[indexPrevFirstNewLine] == ' ' or tString[indexPrevFirstNewLine] == '\t':
                 indexPrevFirstNewLine = indexPrevFirstNewLine - 1
             if tString[indexPrevFirstNewLine] == '\\':
-                indexFirstNewLine = tString[indexFirstNewLine+1:].find('\n') + indexFirstNewLine + 1
+                tString = tString[:indexPrevFirstNewLine] + ' ' * (indexFirstNewLine - indexPrevFirstNewLine + 1) + tString[indexFirstNewLine + 1:]
+                indexFirstNewLine = tString.find('\n')
                 curLine = curLine + 1
             else:
                 break
@@ -50,7 +51,6 @@ class ComplexAttribute(Statement):
             tShlexObject = shlex.shlex(tString[indexParenthesisLeft + 1:indexParenthesisRight])
             tShlexObject.whitespace += ','
             tShlexObject.wordchars += '.'
-            tShlexObject.commenters += '\\'
             self.value = list(tShlexObject)
             tResidualString = tString[indexFirstSemicolon + 1 : indexFirstNewLine]
             if tResidualString.strip() != '':
