@@ -20,7 +20,7 @@ class SimpleAttribute(Statement):
         # Sanity check
         if curChar >= endChar:
             print("[ERROR]: Starting beyond the end of the file. Something must has gone wrong!")
-            return endChar, -1
+            return len(libFile), -1
         
         self.startingPoint = curChar
 

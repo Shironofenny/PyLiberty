@@ -57,7 +57,7 @@ class GroupStatement(Statement):
         # Sanity check
         if curChar >= endChar:
             print("[ERROR]: Starting beyond the end of the file. Something must has gone wrong!")
-            return endChar, -1
+            return len(libFile), -1
         
         self.startingPoint = curChar
         
@@ -69,7 +69,7 @@ class GroupStatement(Statement):
         if indexFirstLeftBracket < indexFirstLeftBracket or indexFirstLeftBracket == -1 or indexFirstSemicolon == -1:
             if verbose:
                 print("[ERROR]: Not a valid group statement on line " + str(curLine + 1) + ".")
-            return endChar, -1
+            return len(libFile), -1
         
         sGroupStatementHeader = tString[:indexFirstLeftBracket]
         indexLeftParenthesis = sGroupStatementHeader.find('(')
@@ -80,7 +80,6 @@ class GroupStatement(Statement):
         curChar, curLine = Utils.moveToNextStatement(libFile, curChar, endChar, curLine)
 
         # Parsing everything within this group statement
-        sStatementCounter = 0
         while True:
             tString = libFile[curChar:]
             # Check if it is the end of the group statement
