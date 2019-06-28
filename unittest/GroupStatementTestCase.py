@@ -34,9 +34,13 @@ class GroupStatementTestCase(unittest.TestCase):
         sSortedListOfStatements.sort()
 
         self.assertEqual(sSortedListOfStatements, sListOfStatements)
-        print(sListOfStatements[0].value)
-        print(sListOfStatements[1].index)
-        print(sListOfStatements[1].content)
+
+        sOutLibString = ''
+        for i in range(2):
+            sOutLibString = sListOfStatements[i].write(sOutLibString, 0, verbose=True)
+        
+        with open('ut_minlibwrite.lib', 'w') as outputLib:
+            outputLib.write(sOutLibString)
         
 if __name__ == "__main__":
     unittest.main()

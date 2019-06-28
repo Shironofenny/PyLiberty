@@ -76,7 +76,7 @@ class ComplexAttribute(Statement):
         if listLength == 0:
             if verbose:
                 print("[Warning]: Complex attribute " + self.name + " has no value!")
-                return libFile, indentationLevel
+                return libFile
         else:
             libFile = libFile + '\n' + Utils.indent(indentationLevel, verbose)
             libFile = libFile + self.name + ' ('
@@ -84,15 +84,17 @@ class ComplexAttribute(Statement):
                 for tIterator in range(listLength):
                     if tIterator != 0:
                         libFile = libFile + ', '
+                    else:
+                        libFile = libFile + ' '
                     libFile = libFile + '\\\n' + Utils.indent(indentationLevel + 1, verbose)
-                    libFile = libFile + self.value[tIterator]
-                libFile = libFile + '\\\n' + Utils.indent(indentationLevel, verbose) + ');'
+                    libFile = libFile + str(self.value[tIterator])
+                libFile = libFile + ' \\\n' + Utils.indent(indentationLevel, verbose) + ');'
             else:
                 for tIterator in range(listLength):
-                    libFile = libFile + self.value[tIterator]
+                    libFile = libFile + str(self.value[tIterator])
                     if tIterator != listLength - 1:
                         libFile = libFile + ', '
                 libFile = libFile + ');'
             if self.comment != None:
                 libFile = libFile + ' ' + self.comment
-        return libFile, indentationLevel
+        return libFile

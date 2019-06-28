@@ -12,10 +12,12 @@ class Statement(object):
     def __str__(self):
         # This class is supposed to be a semi-abstract class
         return '[WARNING]: Not a properly initialized statement!'
-
+    
     def parse(self, libFile, curChar, endChar, curLine, verbose = False):
         # Should not call this function!
         return curChar, curLine
 
     def write(self, libFile, indentationLevel, verbose = False):
-        return libFile, indentationLevel
+        # Indentation level is not returned since every single statement should
+        # return on the same indentation level it started with
+        return libFile

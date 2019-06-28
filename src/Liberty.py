@@ -53,3 +53,25 @@ class Liberty(GroupStatement):
 
     def getLibraryName(self):
         return self.value
+    
+    def write(self, filename, verbose = False):
+        if os.path.isfile(filename):
+            if verbose:
+                print("[WARNING]: File " + filename + " exists. Its content will be overwritten!")
+        
+        if not isinstance(filename, str):
+            if verbose:
+                print("[ERROR]: Input argument \"filename\" must be a valid string!")
+        with open(filename, 'w') as libFile:
+            sLibString = ''
+            if len(self.headComment) > 0:
+                for tIterator in range(len(self.headComment)):
+                    sLibString = self.headComment[tIterator].write(sLibString, 0, verbose)
+            sLibString = GroupStatement.write(self, sLibString, 0, verbose)
+            if len(self.headComment) > 0:
+                for tIterator in range(len(self.headComment)):
+                    sLibString = self.headComment[tIterator].write(sLibString, 0, verbose)
+            # Remove the initial new line
+            if sLibString[0] == '\n':
+                sLibString = sLibString[1:]
+            libFile.write(sLibString)

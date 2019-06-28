@@ -104,3 +104,11 @@ class GroupStatement(Statement):
             curChar, curLine = Utils.moveToNextStatement(libFile, curChar, sEndOfFile, curLine)
 
         return curChar, curLine
+    
+    def write(self, libFile, indentationLevel, verbose = False):
+        libFile = libFile + '\n' + Utils.indent(indentationLevel)
+        libFile = libFile + self.name + ' (' + self.value + ') {'
+        for tIterator in range(len(self.content)):
+            libFile = self.content[tIterator].write(libFile, indentationLevel + 1, verbose)
+        libFile = libFile + '\n' + Utils.indent(indentationLevel) + '}'
+        return libFile

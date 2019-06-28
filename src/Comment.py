@@ -1,4 +1,5 @@
 from .Statement import Statement
+from . import Utils
 
 class Comment(Statement):
 
@@ -43,3 +44,8 @@ class Comment(Statement):
         curLine = curLine + tNrNewLines
         curChar = curChar + indexCommentEnd + 2
         return curChar, curLine
+    
+    def write(self, libFile, indentationLevel, verbose = False):
+        libFile = libFile + '\n' + Utils.indent(indentationLevel)
+        libFile = libFile + self.value
+        return libFile

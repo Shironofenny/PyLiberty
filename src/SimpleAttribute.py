@@ -71,7 +71,7 @@ class SimpleAttribute(Statement):
 
     def write(self, libFile, indentationLevel, verbose = False):
         libFile = libFile + '\n' + Utils.indent(indentationLevel, verbose)
-        libFile = libFile + self.name + ' : ' + self.value + ';'
+        libFile = libFile + self.name + ' : ' + str(self.value) + ';'
         if self.comment != None:
             libFile = libFile + ' ' + self.comment
-        return libFile, indentationLevel
+        return libFile
