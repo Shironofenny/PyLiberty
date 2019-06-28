@@ -33,10 +33,15 @@ class ComplexAttributeTestCase(unittest.TestCase):
         sSortedListOfStatements.sort()
 
         self.assertEqual(sSortedListOfStatements, sListOfStatements)
+        sWriteFile = ''
+        indentationLevel = 0
         for i in range(7):
             print(sListOfStatements[i].name)
             print(sListOfStatements[i].value)
             print(sListOfStatements[i].comment)
+            sWriteFile, indentationLevel = sListOfStatements[i].write(sWriteFile, indentationLevel)
+        with open('ut_caswrite.lib', 'w') as sOutputFile:
+            sOutputFile.write(sWriteFile)
         
 if __name__ == "__main__":
     unittest.main()

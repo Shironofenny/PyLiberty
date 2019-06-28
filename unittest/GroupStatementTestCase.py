@@ -22,7 +22,7 @@ class GroupStatementTestCase(unittest.TestCase):
             sListOfStatements = [None] * 2
             tCurLine = 0
             tCurChar = 0
-            tCurChar, tCurLine = Utils.moveToNextStatement(sContent, tCurChar, sEndChar, tCurLine)
+            tCurChar, tCurLine = Utils.moveToNextStatement(sContent, tCurChar, sEndOfFile, tCurLine)
             i = 0
             while(tCurChar < sEndOfFile):
                 sListOfStatements[i], tEndChar = Utils.classify(sContent, tCurChar)

@@ -4,6 +4,13 @@ from .SimpleAttribute import SimpleAttribute
 from .ComplexAttribute import ComplexAttribute
 from .GroupStatement import GroupStatement
 
+def indent(level, verbose = False):
+    if not isinstance(level, int):
+        if verbose:
+            print("[WARNING]: Incorrect indentation level. Indentation level must be an integer!")
+        return ''
+    return ' ' * level * 2
+
 def readLibertyFile(fileObject):
     ''' Read Liberty File
     I:  fileObject, the object to the file for parsing
@@ -95,7 +102,8 @@ def classify(libFile, curChar):
     # If there is a colon, that is a simple attribute
     indexColon = parseString.find(':')
     if indexColon != -1 and indexColon < indexSemicolon and indexSemicolon != -1:
-        return SimpleAttribute(), indexSemicolon + 1
+        offsetNewLine = parseString[indexSemicolon:].find('\n')
+        return SimpleAttribute(), curChar + indexSemicolon + offsetNewLine + 1
     
     # Check if it is a definition statement
     indexDefine = parseString.find('define')
@@ -110,7 +118,8 @@ def classify(libFile, curChar):
         return Statement(), 0
     
     if indexLeftParenthsis < indexSemicolon and indexLeftParenthsis != -1 and indexSemicolon != -1:
-        return ComplexAttribute(), indexSemicolon + 1
+        offsetNewLine = parseString[indexSemicolon:].find('\n')
+        return ComplexAttribute(), curChar + indexSemicolon + offsetNewLine + 1
 
     # If nothing matches, I don't know
     return Statement()

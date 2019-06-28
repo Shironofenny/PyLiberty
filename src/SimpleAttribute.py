@@ -1,4 +1,5 @@
 from .Statement import Statement
+from . import Utils
 
 class SimpleAttribute(Statement):
 
@@ -24,13 +25,25 @@ class SimpleAttribute(Statement):
         
         self.startingPoint = curChar
 
-        tString = libFile[curChar:]
+        tString = libFile[curChar:endChar]
         indexFirstColon = tString.find(':')
         indexFirstSemicolon = tString.find(';')
         indexFirstNewLine = tString.find('\n')
         
+        # Check if it is a multi-line statement
+        while indexFirstNewLine != -1:
+            indexPrevFirstNewLine = indexFirstNewLine - 1
+            while tString[indexPrevFirstNewLine] == ' ' or tString[indexPrevFirstNewLine] == '\t':
+                indexPrevFirstNewLine = indexPrevFirstNewLine - 1
+            if tString[indexPrevFirstNewLine] == '\\':
+                tString = tString[:indexPrevFirstNewLine] + ' ' * (indexFirstNewLine - indexPrevFirstNewLine + 1) + tString[indexFirstNewLine + 1:]
+                indexFirstNewLine = tString.find('\n')
+                curLine = curLine + 1
+            else:
+                break
+
         # Assuming there is always a new line at the end of the file, if the file is read through Utils.readLibertyFile(fileObject)
-        if indexFirstColon == -1 or indexFirstSemicolon == -1 or indexFirstColon > indexFirstNewLine or indexFirstSemicolon > indexFirstNewLine:
+        if indexFirstColon == -1 or indexFirstSemicolon == -1:
             if verbose:
                 print("[ERROR]: Not a valid simple attribute on line " + str(curLine + 1) + ".")
             self.name = 'invalid_name'
@@ -50,8 +63,15 @@ class SimpleAttribute(Statement):
                 else:
                     self.comment = tString[indexCommentStart:indexCommentEnd+2]
                     indexFirstNewLine = indexCommentEnd + tString[indexCommentEnd:].find('\n')
-        curChar = curChar + indexFirstNewLine + 1
+        curChar = endChar
         # Advances line number by one
         curLine = curLine + 1
 
         return curChar, curLine
+
+    def write(self, libFile, indentationLevel, verbose = False):
+        libFile = libFile + '\n' + Utils.indent(indentationLevel, verbose)
+        libFile = libFile + self.name + ' : ' + self.value + ';'
+        if self.comment != None:
+            libFile = libFile + ' ' + self.comment
+        return libFile, indentationLevel

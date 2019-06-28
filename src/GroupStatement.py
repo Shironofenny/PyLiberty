@@ -54,8 +54,11 @@ class GroupStatement(Statement):
             I endLine is the end of the line, just for safety reason
             R nextLine is the next line that the potential parent parser should start to work on
         '''
+
+        # endChar cannot be properly determined before the group statement is parsed
+        sEndOfFile = len(libFile)
         # Sanity check
-        if curChar >= endChar:
+        if curChar >= sEndOfFile:
             print("[ERROR]: Starting beyond the end of the file. Something must has gone wrong!")
             return len(libFile), -1
         
@@ -63,13 +66,13 @@ class GroupStatement(Statement):
         
         # The current part of the information should be the starting point of a group statement
         # Put a redundant check to be safe
-        tString = libFile[curChar:]
+        tString = libFile[curChar:] 
         indexFirstLeftBracket = tString.find('{')
         indexFirstSemicolon = tString.find(';')
         if indexFirstLeftBracket < indexFirstLeftBracket or indexFirstLeftBracket == -1 or indexFirstSemicolon == -1:
             if verbose:
                 print("[ERROR]: Not a valid group statement on line " + str(curLine + 1) + ".")
-            return len(libFile), -1
+            return sEndOfFile, -1
         
         sGroupStatementHeader = tString[:indexFirstLeftBracket]
         indexLeftParenthesis = sGroupStatementHeader.find('(')
@@ -77,7 +80,7 @@ class GroupStatement(Statement):
         self.name = sGroupStatementHeader[:indexLeftParenthesis].strip()
         self.value = sGroupStatementHeader[indexLeftParenthesis + 1 : indexRightParenthesis].strip()
         curChar = curChar + indexFirstLeftBracket + 1
-        curChar, curLine = Utils.moveToNextStatement(libFile, curChar, endChar, curLine)
+        curChar, curLine = Utils.moveToNextStatement(libFile, curChar, sEndOfFile, curLine)
 
         # Parsing everything within this group statement
         while True:
@@ -89,7 +92,7 @@ class GroupStatement(Statement):
 
             # Actual parsing starts here
             # All leading white spaces should have been removed before the classification started
-            tStatement, _ = Utils.classify(libFile, curChar)
+            tStatement, endChar = Utils.classify(libFile, curChar)
             curChar, curLine = tStatement.parse(libFile, curChar, endChar, curLine, verbose)
             self.content.append(tStatement)
             tName = tStatement.name
@@ -98,6 +101,6 @@ class GroupStatement(Statement):
                 self.index[tName].append(tLocation)
             else:
                 self.index[tName] = [tLocation]
-            curChar, curLine = Utils.moveToNextStatement(libFile, curChar, endChar, curLine)
+            curChar, curLine = Utils.moveToNextStatement(libFile, curChar, sEndOfFile, curLine)
 
         return curChar, curLine

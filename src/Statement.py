@@ -15,7 +15,7 @@ class Statement(object):
 
     def parse(self, libFile, curChar, endChar, curLine, verbose = False):
         # Should not call this function!
-        pass
+        return curChar, curLine
 
-    def write(self, libFile):
-        pass
+    def write(self, libFile, indentationLevel, verbose = False):
+        return libFile, indentationLevel

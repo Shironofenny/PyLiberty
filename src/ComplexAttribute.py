@@ -1,6 +1,7 @@
 import shlex
 
 from .Statement import Statement
+from . import Utils
 
 class ComplexAttribute(Statement):
 
@@ -30,7 +31,7 @@ class ComplexAttribute(Statement):
         indexFirstNewLine = tString.find('\n')
         
         # Check if it is a multi-line statement
-        while True:
+        while indexFirstNewLine != -1:
             indexPrevFirstNewLine = indexFirstNewLine - 1
             while tString[indexPrevFirstNewLine] == ' ' or tString[indexPrevFirstNewLine] == '\t':
                 indexPrevFirstNewLine = indexPrevFirstNewLine - 1
@@ -41,7 +42,7 @@ class ComplexAttribute(Statement):
             else:
                 break
 
-        if indexParenthesisLeft == -1 or indexParenthesisRight == -1 or indexFirstSemicolon == -1 or indexParenthesisLeft > indexFirstNewLine or indexParenthesisRight > indexFirstNewLine:
+        if indexParenthesisLeft == -1 or indexParenthesisRight == -1 or indexFirstSemicolon == -1:
             if verbose:
                 print("[ERROR]: Not a valid complex attribute on line " + str(curLine + 1) + ".")
             self.name = 'invalid_name'
@@ -64,8 +65,34 @@ class ComplexAttribute(Statement):
                 else:
                     self.comment = tString[indexCommentStart:indexCommentEnd+2]
                     indexFirstNewLine = indexCommentEnd + tString[indexCommentEnd:].find('\n')
-        curChar = curChar + indexFirstNewLine + 1
+        curChar = endChar
         # Advances line number by one
         curLine = curLine + 1
 
         return curChar, curLine
+
+    def write(self, libFile, indentationLevel, verbose = False):
+        listLength = len(self.value)
+        if listLength == 0:
+            if verbose:
+                print("[Warning]: Complex attribute " + self.name + " has no value!")
+                return libFile, indentationLevel
+        else:
+            libFile = libFile + '\n' + Utils.indent(indentationLevel, verbose)
+            libFile = libFile + self.name + ' ('
+            if listLength > 1 and len(self.value[0]) * listLength > 50:
+                for tIterator in range(listLength):
+                    if tIterator != 0:
+                        libFile = libFile + ', '
+                    libFile = libFile + '\\\n' + Utils.indent(indentationLevel + 1, verbose)
+                    libFile = libFile + self.value[tIterator]
+                libFile = libFile + '\\\n' + Utils.indent(indentationLevel, verbose) + ');'
+            else:
+                for tIterator in range(listLength):
+                    libFile = libFile + self.value[tIterator]
+                    if tIterator != listLength - 1:
+                        libFile = libFile + ', '
+                libFile = libFile + ');'
+            if self.comment != None:
+                libFile = libFile + ' ' + self.comment
+        return libFile, indentationLevel
