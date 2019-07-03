@@ -27,24 +27,104 @@ class GroupStatement(Statement):
         if isinstance(key, slice):
             raise TypeError("Group statement doesn't take slices as keys.")
         elif isinstance(key, str):
-            if key in self.index:
-                if len(self.index[key]) == 1:
-                    return self.content[self.index[key][0]]
+            # Initializing for better autocompletion
+            tReturnObject = None
+            # Case 1: it is a multi-level access
+            if '.' in key:
+                keyChain = key.split('.')
+                tSearchObjects = [self]
+                # Find a list of objects recursively
+                for iKey in keyChain:
+                    # Process to see if a specific name is in the group statement
+                    # For better auto-completion, things are initialized (although unnecessary)
+                    tGroup = None
+                    tToken = None
+                    if ('(' in iKey) and (')' in iKey):
+                        tLeftP = iKey.find('(')
+                        tRightP = iKey.find(')')
+                        tGroup = iKey[:tLeftP].strip()
+                        tToken = iKey[tLeftP + 1 : tRightP].strip()
+                    else:
+                        tGroup = iKey
+                    tNextLevelObjects = []
+                    for tSearchObject in tSearchObjects:
+
+                        # Case 1: "valid_name" or "valid_group(valid_name)""
+                        if tGroup in tSearchObject.index:
+                            # Get the indexes of where the objects are found
+                            tIndexes = tSearchObject.index[tGroup]
+                            # Find if they match the token
+                            for tIndex in tIndexes:
+                                tExamineObject = tSearchObject.content[tIndex]
+                                if tToken == None:
+                                    tNextLevelObjects.append(tExamineObject)
+                                else:
+                                    if isinstance(tExamineObject, GroupStatement):
+                                        if (tToken == '*') or (tExamineObject.value == tIndex):
+                                            tNextLevelObjects.append(tExamineObject)
+                        
+                        # Case 2: "*" or "*(valid_name)"
+                        elif tGroup == '*':
+                            if tToken == None:
+                                tNextLevelObjects.append(tSearchObject.content)
+                            else:
+                                for tExamineObject in tSearchObject.content:
+                                    if isinstance(tExamineObject, GroupStatement) and tExamineObject.value == tToken:
+                                        tNextLevelObjects.append(tExaminObject)
+                        
+                        # Case 3: I don't know
+                        else:
+                            # Once nothing hits, return a new empty list
+                            return []
+                    # At the end of the loop, next level objects become current level objects
+                    tSearchObjects = tNextLevelObjects
+
+                # By the end, return the objects that are supposed to go through next level searching               
+                tReturnObject = tSearchObjects
+
+            # Case 2: it is a single level access
+            else:
+                tGroup = None
+                tToken = None
+                # It is a group statement
+                if ('(' in key) and (')' in key):
+                    tLeftP = key.find('(')
+                    tRightP = key.find(')')
+                    tGroup = key[:tLeftP]
+                    tToken = key[tLeftP+1 : tRightP]
                 else:
-                    return [self.content[i] for i in self.index[key]]
+                    tGroup = key
+                
+                # Now, it is a properly parsed group statement with tGroup(tToken)
+                # Case 1: "property_name" or "*""
+                if tToken == None:
+                    if tGroup == '*':
+                        tReturnObject = self.content
+                    else:
+                        tReturnObject = [self.content[i] for i in self.index[tGroup]]
+                # Case 2: "valid_group(valid_name)" or "valid_group(*)" or "*(valid_name)" or *(*)" 
+                else:
+                    tReturnObject = []
+                    # "*(valid_name)" or "*(*)"
+                    if tGroup == '*':
+                        for iEntry in self.content:
+                            if isinstance(iEntry, GroupStatement) and (tToken == '*' or iEntry.value == tToken):
+                                tReturnObject.append(iEntry)
+                    # "valid_group(valid_name)" or "valid_group(*)"
+                    else:
+                        tReturnIndex = self.index[tGroup]
+                        if tToken == '*':
+                            for iEntryIndex in tReturnIndex:
+                                if isinstance(self.content[iEntryIndex], GroupStatement):
+                                    tReturnObject.append(self.content[iEntryIndex])
+                        else:
+                            for iEntryIndex in tReturnIndex:
+                                if isinstance(self.content[iEntryIndex], GroupStatement) and self.content[iEntryIndex].value == tToken:
+                                    tReturnObject.append(self.content[iEntryIndex])
+            if len(tReturnObject) == 1:
+                return tReturnObject[0]
             else:
-                raise IndexError("Cannot find entry " + str(key) + ".")
-        elif isinstance(key, tuple):
-            if len(key) != 2:
-                raise IndexError("Group statements only accept (name, value) as a tuple for group statement indexing")
-            name, value = key
-            if name in self.index:
-                for iEntry in self.index[name]:
-                    if self.content[iEntry].value == value:
-                        return self.content[iEntry]
-                raise IndexError("Group statement " + name + " with value " + value + " not found!")
-            else:
-                raise IndexError("Group statement " + name + " not found!")
+                return tReturnObject
         else:
             raise TypeError("Invalid argument Type!")
 
