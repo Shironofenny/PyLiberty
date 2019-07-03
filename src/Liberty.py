@@ -41,6 +41,7 @@ class Liberty(GroupStatement):
                     curChar, curLine = tNextStatement.parse(sLibertyString, curChar, endChar, curLine, verbose)
                 elif isinstance(tNextStatement, GroupStatement):
                     curChar, curLine = self.parse(sLibertyString, curChar, endChar, curLine, verbose)
+                    self.path = ''
                     sIsPostLibrary = True
                 elif isinstance(tNextStatement, Comment) and sIsPostLibrary:
                     self.tailComment.append(tNextStatement)

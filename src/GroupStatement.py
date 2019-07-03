@@ -162,6 +162,8 @@ class GroupStatement(Statement):
 
         # Check if it is a top level group statement:
         if self._parentPath == '':
+            self.path = '@'
+        elif self._parentPath == '@':
             self.path = self.name + '(' + self.value + ')'
         else:
             self.path = self._parentPath + '.' + self.name + '(' + self.value + ')'
