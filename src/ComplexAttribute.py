@@ -69,6 +69,8 @@ class ComplexAttribute(Statement):
         # Advances line number by one
         curLine = curLine + 1
 
+        self.path = self._parentPath + '.' + self.name
+
         return curChar, curLine
 
     def write(self, libFile, indentationLevel, verbose = False):

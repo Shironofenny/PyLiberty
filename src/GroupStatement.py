@@ -60,7 +60,7 @@ class GroupStatement(Statement):
                                     tNextLevelObjects.append(tExamineObject)
                                 else:
                                     if isinstance(tExamineObject, GroupStatement):
-                                        if (tToken == '*') or (tExamineObject.value == tIndex):
+                                        if (tToken == '*') or (tExamineObject.value == tToken):
                                             tNextLevelObjects.append(tExamineObject)
                         
                         # Case 2: "*" or "*(valid_name)"
@@ -75,7 +75,7 @@ class GroupStatement(Statement):
                         # Case 3: I don't know
                         else:
                             # Once nothing hits, return a new empty list
-                            return []
+                            continue
                     # At the end of the loop, next level objects become current level objects
                     tSearchObjects = tNextLevelObjects
 
@@ -159,6 +159,12 @@ class GroupStatement(Statement):
         indexRightParenthesis = sGroupStatementHeader.find(')')
         self.name = sGroupStatementHeader[:indexLeftParenthesis].strip()
         self.value = sGroupStatementHeader[indexLeftParenthesis + 1 : indexRightParenthesis].strip()
+
+        # Check if it is a top level group statement:
+        if self._parentPath == '':
+            self.path = self.name + '(' + self.value + ')'
+        else:
+            self.path = self._parentPath + '.' + self.name + '(' + self.value + ')'
         curChar = curChar + indexFirstLeftBracket + 1
         curChar, curLine = Utils.moveToNextStatement(libFile, curChar, sEndOfFile, curLine)
 
@@ -173,6 +179,7 @@ class GroupStatement(Statement):
             # Actual parsing starts here
             # All leading white spaces should have been removed before the classification started
             tStatement, endChar = Utils.classify(libFile, curChar)
+            tStatement.setParentPath(self.path)
             curChar, curLine = tStatement.parse(libFile, curChar, endChar, curLine, verbose)
             self.content.append(tStatement)
             tName = tStatement.name
