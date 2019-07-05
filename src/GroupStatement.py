@@ -101,7 +101,10 @@ class GroupStatement(Statement):
                     if tGroup == '*':
                         tReturnObject = self.content
                     else:
-                        tReturnObject = [self.content[i] for i in self.index[tGroup]]
+                        if tGroup in self.index:
+                            tReturnObject = [self.content[i] for i in self.index[tGroup]]
+                        else:
+                            tReturnObject = []
                 # Case 2: "valid_group(valid_name)" or "valid_group(*)" or "*(valid_name)" or *(*)" 
                 else:
                     tReturnObject = []
