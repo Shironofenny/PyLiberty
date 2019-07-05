@@ -121,10 +121,7 @@ class GroupStatement(Statement):
                             for iEntryIndex in tReturnIndex:
                                 if isinstance(self.content[iEntryIndex], GroupStatement) and self.content[iEntryIndex].value == tToken:
                                     tReturnObject.append(self.content[iEntryIndex])
-            if len(tReturnObject) == 1:
-                return tReturnObject[0]
-            else:
-                return tReturnObject
+            return tReturnObject
         else:
             raise TypeError("Invalid argument Type!")
 
