@@ -179,6 +179,7 @@ class GroupStatement(Statement):
             # All leading white spaces should have been removed before the classification started
             tStatement, endChar = Utils.classify(libFile, curChar)
             tStatement.setParentPath(self.path)
+            tStatement.parent = self
             curChar, curLine = tStatement.parse(libFile, curChar, endChar, curLine, verbose)
             self.content.append(tStatement)
             tName = tStatement.name

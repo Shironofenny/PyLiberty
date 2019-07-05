@@ -7,6 +7,7 @@ class Statement(object):
         self.value = None
         self.path = ''
         self._parentPath = ''
+        self.parent = None # Parent statement, can only be a group statement
 
     def __lt__(self, other):
         return self.startingPoint < other.startingPoint
