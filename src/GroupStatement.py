@@ -70,7 +70,7 @@ class GroupStatement(Statement):
                             else:
                                 for tExamineObject in tSearchObject.content:
                                     if isinstance(tExamineObject, GroupStatement) and tExamineObject.value == tToken:
-                                        tNextLevelObjects.append(tExaminObject)
+                                        tNextLevelObjects.append(tExamineObject)
                         
                         # Case 3: I don't know
                         else:
