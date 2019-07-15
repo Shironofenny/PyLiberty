@@ -69,9 +69,9 @@ class Liberty(GroupStatement):
                 for tIterator in range(len(self.headComment)):
                     sLibString = self.headComment[tIterator].write(sLibString, 0, verbose)
             sLibString = GroupStatement.write(self, sLibString, 0, verbose)
-            if len(self.headComment) > 0:
-                for tIterator in range(len(self.headComment)):
-                    sLibString = self.headComment[tIterator].write(sLibString, 0, verbose)
+            if len(self.tailComment) > 0:
+                for tIterator in range(len(self.tailComment)):
+                    sLibString = self.tailComment[tIterator].write(sLibString, 0, verbose)
             # Remove the initial new line
             if sLibString[0] == '\n':
                 sLibString = sLibString[1:]
